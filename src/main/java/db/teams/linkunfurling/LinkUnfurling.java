@@ -3,13 +3,13 @@
 
 package db.teams.linkunfurling;
 
-import com.codepoetics.protonpack.collectors.CompletableFutures;
-import com.microsoft.bot.builder.ActivityHandler;
-import com.microsoft.bot.builder.MessageFactory;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
 import com.microsoft.bot.builder.TurnContext;
 import com.microsoft.bot.builder.teams.TeamsActivityHandler;
 import com.microsoft.bot.schema.CardImage;
-import com.microsoft.bot.schema.ChannelAccount;
 import com.microsoft.bot.schema.HeroCard;
 import com.microsoft.bot.schema.ThumbnailCard;
 import com.microsoft.bot.schema.teams.AppBasedLinkQuery;
@@ -18,14 +18,6 @@ import com.microsoft.bot.schema.teams.MessagingExtensionParameter;
 import com.microsoft.bot.schema.teams.MessagingExtensionQuery;
 import com.microsoft.bot.schema.teams.MessagingExtensionResponse;
 import com.microsoft.bot.schema.teams.MessagingExtensionResult;
-
-import org.apache.commons.lang3.StringUtils;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * This class implements the functionality of the Bot.
@@ -56,58 +48,63 @@ public class LinkUnfurling extends TeamsActivityHandler {
         return queryText;
     }
     
-@Override
-protected CompletableFuture<MessagingExtensionResponse> onTeamsMessagingExtensionQuery(
-        TurnContext turnContext,
-        MessagingExtensionQuery query
-) {
-    // Get query text
-    String queryText = GetQueryText(query);
-    
-    // Create a hero card
-    HeroCard card = new HeroCard();
-    card.setTitle("Echo");
-    card.setSubtitle(queryText);
-    card.setText("Link unfurling");
+    @Override
+    protected CompletableFuture<MessagingExtensionResponse> onTeamsMessagingExtensionQuery(
+            TurnContext turnContext,
+            MessagingExtensionQuery query
+    ) {
+        // Get query text
+        String queryText = GetQueryText(query);
+        
+        // Create a hero card
+        HeroCard card = new HeroCard();
+        card.setTitle("Echo");
+        card.setSubtitle(queryText);
+        card.setText("Link unfurling");
 
-    // Create attachment
-    MessagingExtensionAttachment attachment = new MessagingExtensionAttachment();
-    attachment.setContent(card);
-    attachment.setContentType(HeroCard.CONTENTTYPE);
-    attachment.setPreview(card.toAttachment());
+        // Create attachment
+        MessagingExtensionAttachment attachment = new MessagingExtensionAttachment();
+        attachment.setContent(card);
+        attachment.setContentType(HeroCard.CONTENTTYPE);
+        attachment.setPreview(card.toAttachment());
 
-    // Prepare result
-    MessagingExtensionResult result = new MessagingExtensionResult();
-    result.setAttachmentLayout("list");
-    result.setType("result");
-    result.setAttachment(attachment);
+        // Prepare result
+        MessagingExtensionResult result = new MessagingExtensionResult();
+        result.setAttachmentLayout("list");
+        result.setType("result");
+        result.setAttachment(attachment);
 
-    // Return the response
-    return CompletableFuture.completedFuture(new MessagingExtensionResponse(result));       
-}
+        // Return the response
+        return CompletableFuture.completedFuture(new MessagingExtensionResponse(result));       
+    }
 
 
-@Override
+    @Override
     protected CompletableFuture<MessagingExtensionResponse> onTeamsAppBasedLinkQuery(
         TurnContext turnContext,
         AppBasedLinkQuery query
     ) {
+        // Create ThumbnailCard
         ThumbnailCard card = new ThumbnailCard();
         card.setTitle("CodeProject");
-        card.setText(query.getUrl());        
-        card.setImages(Collections.singletonList(
-            new CardImage("https://codeproject.freetls.fastly.net/App_Themes/CodeProject/Img/logo250x135.gif")
-        ));
+        card.setText(query.getUrl());
 
+        final String logoLink = "https://codeproject.freetls.fastly.net/App_Themes/CodeProject/Img/logo250x135.gif";
+        CardImage cardImage = new CardImage(logoLink);
+        card.setImages(Collections.singletonList(cardImage));
+
+        // Create attachments
         MessagingExtensionAttachment attachments = new MessagingExtensionAttachment();
         attachments.setContentType(HeroCard.CONTENTTYPE);
         attachments.setContent(card);
 
+        // Result
         MessagingExtensionResult result = new MessagingExtensionResult();
         result.setAttachmentLayout("list");
         result.setType("result");
         result.setAttachments(Collections.singletonList(attachments));
 
+        // MessagingExtensionResponse
         return CompletableFuture.completedFuture(new MessagingExtensionResponse(result));
     }
 
