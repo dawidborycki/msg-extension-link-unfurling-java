@@ -1,0 +1,68 @@
+{
+    "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.11/MicrosoftTeams.schema.json",
+    "manifestVersion": "1.11",
+    "version": "1.0.0",
+    "id": "477fb09c-5af1-4e04-a67e-132d1962459e",
+    "packageName": "db.teams.linkunfurling",
+    "developer": {
+      "name": "Contoso, Inc.",
+      "websiteUrl": "https://www.teams.com",
+      "privacyUrl": "https://example.azurewebsites.net",
+      "termsOfUseUrl": "https://example.azurewebsites.net"
+    },
+    "icons": {
+      "color": "color.png",
+      "outline": "outline.png"
+    },
+    "name": {
+      "short": "link-unfurling",
+      "full": ""
+    },
+    "description": {
+      "short": "Link unfurling",
+      "full": "Link unfurling for CodeProject"
+    },
+    "accentColor": "#FFFFFF",
+    "composeExtensions": [
+      {
+        "botId": "e09d288a-73a2-4d4a-b6fb-e47415e16740",
+        "canUpdateConfiguration": true,
+        "commands": [
+          {
+            "id": "searchQuery",
+            "type": "query",
+            "title": "Search",
+            "description": "",
+            "initialRun": true,
+            "fetchTask": false,
+            "context": [
+              "commandBox"
+            ],
+            "parameters": [
+              {
+                "name": "searchQuery",
+                "title": "Search Query",
+                "description": "Your search query",
+                "inputType": "text"
+              }
+            ]
+          }
+        ],
+        "messageHandlers": [
+          {
+            "type": "link",
+            "value": {
+              "domains": [
+                "www.codeproject.com"
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "permissions": [
+      "identity",
+      "messageTeamMembers"
+    ],
+    "validDomains": []
+  }
